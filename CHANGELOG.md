@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/incutonez/assessments-games/compare/v1.0.0...v1.0.1) (2025-07-11)
+
+### Bug Fixes
+
+* Fixing Deployment URL ([#4](https://github.com/incutonez/assessments-games/issues/4)) ([da59d21](https://github.com/incutonez/assessments-games/commit/da59d21975f22e9a178f99838953e6f74d8b9c12))
+
 ## 1.0.0 (2025-07-11)
 
 ### Features
