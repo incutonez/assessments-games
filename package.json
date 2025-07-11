@@ -9,7 +9,9 @@
     "lint": "npx eslint --fix",
     "preview": "vite preview",
     "explode": "npm cache clean --force && npx rimraf package-lock.json **/node_modules --glob && npm i",
-    "prepare": "husky"
+    "prepare": "husky",
+    "update:deps": "node ./updateDependencies.js",
+    "update:versions": "node ./updateVersions.js"
   },
   "dependencies": {
     "@material-symbols/svg-400": "^0.31.9",
