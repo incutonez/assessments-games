@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/incutonez/assessments-games/compare/v1.0.1...v1.1.0) (2025-07-12)
+
+### Features
+
+* Adding Minor Fit and Finish ([#5](https://github.com/incutonez/assessments-games/issues/5)) ([3f1c9ef](https://github.com/incutonez/assessments-games/commit/3f1c9ef9b2567e30e1765ce5fb367d88a6ed18b4))
+
 ## [1.0.1](https://github.com/incutonez/assessments-games/compare/v1.0.0...v1.0.1) (2025-07-11)
 
 ### Bug Fixes
