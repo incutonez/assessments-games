@@ -15,4 +15,5 @@ export interface ButtonRouteProps extends LinkProps {
 	loading?: boolean;
 	// Taken from https://github.com/TanStack/router/discussions/824#discussioncomment-12342295
 	route: keyof FileRoutesByTo;
+	className?: string;
 }

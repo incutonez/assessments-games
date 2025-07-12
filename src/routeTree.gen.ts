@@ -10,32 +10,52 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TicTacToeRouteImport } from './routes/tic-tac-toe'
+import { Route as SnakesAndLaddersRouteImport } from './routes/snakes-and-ladders'
+import { Route as IndexRouteImport } from './routes/index'
 
 const TicTacToeRoute = TicTacToeRouteImport.update({
   id: '/tic-tac-toe',
   path: '/tic-tac-toe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SnakesAndLaddersRoute = SnakesAndLaddersRouteImport.update({
+  id: '/snakes-and-ladders',
+  path: '/snakes-and-ladders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/snakes-and-ladders': typeof SnakesAndLaddersRoute
   '/tic-tac-toe': typeof TicTacToeRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/snakes-and-ladders': typeof SnakesAndLaddersRoute
   '/tic-tac-toe': typeof TicTacToeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/snakes-and-ladders': typeof SnakesAndLaddersRoute
   '/tic-tac-toe': typeof TicTacToeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/tic-tac-toe'
+  fullPaths: '/' | '/snakes-and-ladders' | '/tic-tac-toe'
   fileRoutesByTo: FileRoutesByTo
-  to: '/tic-tac-toe'
-  id: '__root__' | '/tic-tac-toe'
+  to: '/' | '/snakes-and-ladders' | '/tic-tac-toe'
+  id: '__root__' | '/' | '/snakes-and-ladders' | '/tic-tac-toe'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  SnakesAndLaddersRoute: typeof SnakesAndLaddersRoute
   TicTacToeRoute: typeof TicTacToeRoute
 }
 
@@ -48,10 +68,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TicTacToeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/snakes-and-ladders': {
+      id: '/snakes-and-ladders'
+      path: '/snakes-and-ladders'
+      fullPath: '/snakes-and-ladders'
+      preLoaderRoute: typeof SnakesAndLaddersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  SnakesAndLaddersRoute: SnakesAndLaddersRoute,
   TicTacToeRoute: TicTacToeRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,6 +1,6 @@
 ﻿import { type ReactNode, useCallback, useEffect, useState } from "react";
+import ReactConfetti from "react-confetti";
 import { BaseButton } from "@/components/BaseButton.tsx";
-import { BaseDialog } from "@/components/BaseDialog.tsx";
 import { FieldNumber } from "@/components/FieldNumber.tsx";
 import {
 	checkWinner,
@@ -25,30 +25,48 @@ export function ViewTicTacToe() {
 	const [gameBoard, setGameBoard] = useState<TBoard>([]);
 	const [currentTurn, setCurrentTurn] = useState<ValidTurn>(Player1);
 	const [winner, setWinner] = useState<ValidBoardCell>();
-	const [showWinner, setShowWinner] = useState(false);
-	const footerSlot = (
-		<BaseButton
-			onClick={onClickReplay}
-			text="Replay"
-		/>
-	);
+	const [countdown, setCountdown] = useState(0);
 	let winnerNode: ReactNode;
-	if (winner === EmptyCell) {
+	if (winner !== undefined) {
+		if (winner === EmptyCell) {
+			winnerNode = (
+				<span className="text-5xl">
+					Stalemate
+				</span>
+			);
+		}
+		else {
+			winnerNode = (
+				<>
+					<ReactConfetti
+						initialVelocityY={25}
+						confettiSource={{
+							x: 0,
+							h: document.body.clientHeight,
+							w: document.body.clientWidth,
+							y: document.body.clientHeight,
+						}}
+					/>
+					<span className="text-5xl">
+						Player
+						{" "}
+						{winner}
+						{" "}
+						won!
+					</span>
+				</>
+			);
+		}
 		winnerNode = (
-			<span className="text-5xl">
-				Stalemate
-			</span>
-		);
-	}
-	else if (winner !== undefined) {
-		winnerNode = (
-			<span className="text-5xl">
-				Player
-				{" "}
-				{winner}
-				{" "}
-				won!
-			</span>
+			<>
+				{winnerNode}
+				<div className="text-2xl font-semibold mt-4">
+					Restarting in
+					{" "}
+					{countdown}
+					...
+				</div>
+			</>
 		);
 	}
 
@@ -70,13 +88,6 @@ export function ViewTicTacToe() {
 	function onClickPlay() {
 		setWinner(undefined);
 		setDisableSettings(true);
-		setGameBoard(generateBoard(3));
-	}
-
-	function onClickReplay() {
-		setGameCount(gameCount + 1);
-		setWinner(undefined);
-		setShowWinner(false);
 		setGameBoard(generateBoard(3));
 	}
 
@@ -105,7 +116,6 @@ export function ViewTicTacToe() {
 					setStalemates(stalemates + 1);
 				}
 				setWinner(hasWinner);
-				setShowWinner(true);
 			}
 		}
 		setGameBoard(board);
@@ -121,6 +131,34 @@ export function ViewTicTacToe() {
 		setPlayer2Wins,
 		gameBoard,
 		currentTurn,
+	]);
+
+	useEffect(() => {
+		if (countdown <= 0) {
+			return;
+		}
+		const interval = setInterval(() => {
+			setCountdown(countdown - 1);
+		}, 1000);
+		return () => clearInterval(interval);
+	}, [setCountdown, countdown]);
+
+	useEffect(() => {
+		if (winner !== undefined) {
+			setCountdown(5);
+			setTimeout(() => {
+				setGameCount(gameCount + 1);
+				setWinner(undefined);
+				setGameBoard(generateBoard(3));
+			}, 5000);
+		}
+	}, [
+		winner,
+		setGameCount,
+		setCountdown,
+		gameCount,
+		setWinner,
+		setGameBoard,
 	]);
 
 	useEffect(() => {
@@ -157,8 +195,8 @@ export function ViewTicTacToe() {
 
 	return (
 		<>
-			<main className="flex flex-1">
-				<article className="flex space-x-2">
+			<main className="flex flex-col gap-4 flex-1 py-4 px-2">
+				<section className="flex gap-2">
 					<FieldNumber
 						label="# of Players:"
 						value={players}
@@ -174,44 +212,46 @@ export function ViewTicTacToe() {
 						text="Reset"
 						onClick={onClickReset}
 					/>
-					<section className="flex gap-4">
-						<div className="flex flex-col gap-4">
-							<LabelScore
-								label="Game"
-								value={gameCount}
-							/>
-							<LabelScore
-								label="P1 Wins"
-								value={player1Wins}
-							/>
-							<LabelScore
-								label="P2 Wins"
-								value={player2Wins}
-							/>
-							<LabelScore
-								label="Stalemates"
-								value={stalemates}
-							/>
-						</div>
+				</section>
+				<section className="flex gap-4">
+					<div className="flex flex-col gap-4">
+						<LabelScore
+							label="Game"
+							value={gameCount}
+						/>
+						<LabelScore
+							label="P1 Wins"
+							value={player1Wins}
+						/>
+						<LabelScore
+							label="P2 Wins"
+							value={player2Wins}
+						/>
+						<LabelScore
+							label="Stalemates"
+							value={stalemates}
+						/>
+					</div>
+					<div className="flex flex-col items-center gap-4">
 						<GameBoard
 							board={gameBoard}
 							onSetCell={onSetCell}
 						/>
+						<LabelScore
+							label="Current Turn"
+							value={currentTurn === Player1 ? "Player 1" : "Player 2"}
+						/>
+					</div>
+					<section className="pl-8 flex flex-col items-center justify-center">
+						{winnerNode}
 					</section>
-				</article>
-				<BaseDialog
-					open={showWinner}
-					setOpen={setShowWinner}
-					footerSlot={footerSlot}
-				>
-					{winnerNode}
-				</BaseDialog>
+				</section>
 			</main>
 		</>
 	);
 }
 
-export function LabelScore({ label, value }: { label: string, value: number }) {
+export function LabelScore({ label, value }: { label: string, value: number | string }) {
 	return (
 		<div className="flex space-x-1 items-center">
 			<span className="text-sm uppercase font-semibold text-slate-700">
